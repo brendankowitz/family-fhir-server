@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.Health.Fhir.Api.Features.ActionResults;
 using Microsoft.Health.Fhir.Core.Messages.Get;
 
 namespace Microsoft.Health.Fhir.R4.Functions.Features.Functions
@@ -35,7 +34,7 @@ namespace Microsoft.Health.Fhir.R4.Functions.Features.Functions
 
             var response = await _mediator.Send(new GetCapabilitiesRequest());
 
-            return FhirResult.Create(response.CapabilityStatement);
+            return FunctionsFhirResult.Create(response.CapabilityStatement);
         }
     }
 }
