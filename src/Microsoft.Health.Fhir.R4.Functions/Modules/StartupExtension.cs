@@ -25,9 +25,14 @@ namespace Microsoft.Health.Fhir.R4.Functions.Modules
         {
             EnsureArg.IsNotNull(context);
 
-            foreach (IStartable startable in _provider.GetServices<IStartable>())
+            foreach (var startable in _provider.GetServices<IStartable>())
             {
                 startable.Start();
+            }
+
+            foreach (var initializable in _provider.GetServices<IRequireInitializationOnFirstRequest>())
+            {
+                initializable.EnsureInitialized().GetAwaiter().GetResult();
             }
         }
     }
