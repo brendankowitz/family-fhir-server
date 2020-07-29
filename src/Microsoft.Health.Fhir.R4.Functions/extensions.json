@@ -1,0 +1,8 @@
+{
+  "extensions": [
+    {
+      "name": "Startup",
+      "typeName": "Microsoft.Health.Fhir.R4.Functions.Modules.Startup, Microsoft.Health.Fhir.R4.Functions"
+    }
+  ]
+}

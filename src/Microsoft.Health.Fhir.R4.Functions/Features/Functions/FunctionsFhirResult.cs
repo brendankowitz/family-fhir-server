@@ -22,7 +22,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Microsoft.Health.Fhir.R4.Functions.Features.Functions
 {
-    public class FunctionsFhirResult : FhirResult
+    public class FunctionsFhirResult : FhirResult, IFhirRestResult
     {
         private static readonly FhirJsonSerializer _serializer = new FhirJsonSerializer(SerializerSettings.CreateDefault());
 
@@ -33,6 +33,19 @@ namespace Microsoft.Health.Fhir.R4.Functions.Features.Functions
         public FunctionsFhirResult(ResourceElement resource)
             : base(resource)
         {
+        }
+
+        public object Model => GetResultToSerialize();
+
+        public IDictionary<string, StringValues> Headers
+        {
+            get
+            {
+                /* Headers is not accessible :( we should make this "protected internal" or public */
+                var headersProp = GetType().GetProperty("Headers", BindingFlags.Instance | BindingFlags.NonPublic);
+                var headersValue = (IHeaderDictionary)headersProp.GetValue(this);
+                return headersValue;
+            }
         }
 
         public static new FunctionsFhirResult Create(ResourceElement resource, HttpStatusCode statusCode = HttpStatusCode.OK)
@@ -77,11 +90,7 @@ namespace Microsoft.Health.Fhir.R4.Functions.Features.Functions
                 response.StatusCode = (int)StatusCode.Value;
             }
 
-            /* Headers is not accessible :( we should make this "protected internal" or public */
-            var headersProp = GetType().GetProperty("Headers", BindingFlags.Instance | BindingFlags.NonPublic);
-            var headersValue = (IHeaderDictionary)headersProp.GetValue(this);
-
-            foreach (KeyValuePair<string, StringValues> header in headersValue)
+            foreach (KeyValuePair<string, StringValues> header in Headers)
             {
                 response.Headers.Add(header);
             }

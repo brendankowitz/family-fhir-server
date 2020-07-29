@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
+    <UserSecretsId>ae28a15c-b812-401d-9d7f-ddf0fda726c1</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <None Remove="appsettings.json" />
@@ -14,11 +15,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Health.Fhir.CosmosDb" Version="1.0.0-master-20200710-2" />
     <PackageReference Include="Microsoft.Health.Fhir.R4.Api" Version="1.0.0-master-20200710-2" />
-    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.3" />
+    <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.9" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
-    
   </ItemGroup>
   <ItemGroup>
+    <None Update="extensions.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

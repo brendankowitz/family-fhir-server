@@ -20,8 +20,9 @@ namespace Microsoft.Health.Fhir.R4.Functions.Modules
 
         public StartupExtension(IServiceProvider provider)
         {
-            _provider = provider;
             EnsureArg.IsNotNull(provider);
+
+            _provider = provider;
         }
 
         public void Initialize(ExtensionConfigContext context)

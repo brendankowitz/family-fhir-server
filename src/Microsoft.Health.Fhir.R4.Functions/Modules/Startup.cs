@@ -6,7 +6,9 @@
 using System;
 using System.Reflection;
 using EnsureThat;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Azure.WebJobs.Host.Bindings;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +22,7 @@ using Microsoft.Health.Fhir.Api.Features.Routing;
 using Microsoft.Health.Fhir.Api.Modules;
 using Microsoft.Health.Fhir.Core.Features.Routing;
 using Microsoft.Health.Fhir.Core.Registration;
+using Microsoft.Health.Fhir.R4.Functions.Features.Functions;
 using Microsoft.Health.Fhir.R4.Functions.Features.IoC;
 using Microsoft.Health.Fhir.R4.Functions.Features.Routing;
 using Microsoft.Health.Fhir.R4.Functions.Modules;
@@ -39,8 +42,6 @@ namespace Microsoft.Health.Fhir.R4.Functions.Modules
             /* Hack to get IConfiguration */
             var serviceProvider = builder.Services.BuildServiceProvider();
             var configurationRoot = serviceProvider.GetService<IConfiguration>();
-            var env = serviceProvider.GetRequiredService<IHostEnvironment>();
-
             var appDirectory = serviceProvider.GetRequiredService<IOptions<ExecutionContextOptions>>().Value.AppDirectory;
 
             var configBuilder = new ConfigurationBuilder()
@@ -91,6 +92,14 @@ namespace Microsoft.Health.Fhir.R4.Functions.Modules
                 var fhirBuilder = new FunctionsFhirServerBuilder(services);
                 fhirBuilder.AddCosmosDbCore();
             }
+
+            // Routes
+            services.Add<FhirRouter>().Singleton().AsSelf();
+
+            services.TypesInSameAssemblyAs<IFhirRoute>()
+                .AssignableTo<IFhirRoute>()
+                .Singleton()
+                .AsImplementedInterfaces();
         }
 
         private class FunctionsFhirServerBuilder : IFhirServerBuilder
